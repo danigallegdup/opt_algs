@@ -1,0 +1,117 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 6
+#### **Topic: Network Flow Problems**
+
+---
+
+### **1. Flow Networks**
+- **Definition**:
+  - A **flow network** is a directed graph \( G = (V, E) \) with:
+    - A capacity function \( c: E \to \mathbb{R}_{\geq 0} \), assigning a non-negative real number to each edge.
+  - Common applications:
+    - Maximum flow: Maximum material transfer from a source \( s \) to a sink \( t \).
+    - Minimum cut: Minimum capacity of edges that disconnect \( s \) and \( t \).
+
+---
+
+### **2. Network Flows**
+- **Flow Properties**:
+  - A **flow** \( f: E \to \mathbb{R}_{\geq 0} \) must satisfy:
+    1. **Capacity Constraint**:
+       \[
+       0 \leq f(u \to v) \leq c(u \to v), \quad \forall (u, v) \in E
+       \]
+    2. **Conservation Constraint**:
+       \[
+       \sum_{u \in V} f(u \to v) = \sum_{w \in V} f(v \to w), \quad \forall v \in V \setminus \{s, t\}
+       \]
+  - **Flow Value**:
+    \[
+    |f| := \sum_{v \in V} f(s \to v) - \sum_{v \in V} f(v \to s)
+    \]
+
+- **Feasible Flow**:
+  - Satisfies capacity and conservation constraints.
+- **Maximum Flow**:
+  - A feasible flow \( f \) with the maximum value \( |f| \).
+
+---
+
+### **3. Network Cuts**
+- **Definition**:
+  - An \( (s, t) \)-cut partitions \( V \) into two disjoint sets \( (S, T) \) such that \( s \in S \) and \( t \in T \).
+
+- **Cut Capacity**:
+  \[
+  ||S, T|| := \sum_{u \in S} \sum_{v \in T} c(u \to v)
+  \]
+
+- **Minimum Cut**:
+  - A cut \( (S, T) \) with the smallest capacity.
+
+- **Flow-Cut Inequality**:
+  - For any flow \( f \) and cut \( (S, T) \):
+    \[
+    |f| \leq ||S, T||
+    \]
+
+---
+
+### **4. Max-Flow Min-Cut (MFMC) Theorem**
+- **Statement**:
+  - For any flow network, the maximum flow \( |f| \) equals the capacity of the minimum cut:
+    \[
+    \max_f |f| = \min_{(S, T)} ||S, T||
+    \]
+- **Key Insight**:
+  - A feasible flow \( f \) and a cut \( (S, T) \) exist such that:
+    - \( |f| = ||S, T|| \).
+    - \( f \) saturates all edges from \( S \to T \) and avoids all edges \( T \to S \).
+
+---
+
+### **5. Augmenting Paths and Residual Graphs**
+- **Residual Capacity**:
+  \[
+  c_f(u \to v) = \begin{cases}
+  c(u \to v) - f(u \to v), & \text{if } (u, v) \in E, \\
+  f(v \to u), & \text{if } (v, u) \in E, \\
+  0, & \text{otherwise.}
+  \end{cases}
+  \]
+
+- **Residual Graph**:
+  - Formed using edges with positive residual capacities.
+
+- **Augmenting Path**:
+  - A path from \( s \) to \( t \) in the residual graph.
+
+- **Lemma**:
+  - If an augmenting path exists, the flow can be increased.
+
+---
+
+### **6. Ford-Fulkerson Algorithm**
+- **Algorithm**:
+  1. Start with \( f(u \to v) = 0 \), \( \forall (u, v) \in E \).
+  2. While an augmenting path \( P \) exists in the residual graph:
+     - Compute bottleneck capacity \( F = \min_{(u, v) \in P} c_f(u \to v) \).
+     - Update flow:
+       \[
+       f(u \to v) \leftarrow f(u \to v) + F, \quad f(v \to u) \leftarrow f(v \to u) - F.
+       \]
+  3. Output \( f \).
+
+- **Complexity**:
+  - Runs in \( O(E |f|) \) time for integral capacities.
+
+---
+
+### **7. Key Insights**
+- **Augmenting Path Lemma**:
+  - If no augmenting path exists, the flow is maximum.
+- **Applications**:
+  - Bipartite matching, circulation problems, and minimum-cost flows.
+- **Challenges**:
+  - Ford-Fulkerson's runtime depends on augmenting path selection; poor choices can lead to inefficiency.
+
+Let me know if you need specific examples or further clarifications!
