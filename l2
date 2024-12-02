@@ -1,0 +1,170 @@
+### Condensed Notes: CS4234 Optimization Algorithms - Lecture 2
+
+---
+
+#### **1. Linear Programming (LP)**
+- **Definition**: Solve optimization problems with linear objective functions and constraints.
+- **Components**:
+  1. Variables (\(x_1, x_2, \dots, x_n\)).
+  2. Objective Function (\(f(x)\)): Maximize or minimize.
+  3. Constraints: Linear inequalities.
+
+- **Example**: Optimize production of widgets (\(A\)) and bobbles (\(B\)) to maximize revenue.
+  - Objective: Maximize \(A + 6B\).
+  - Constraints:
+    - \(A \leq 200\), \(B \leq 300\).
+    - \(A + B \leq 400\), \(A, B \geq 0\).
+  - Optimal solution: \((A, B) = (100, 300)\), Revenue = 1900.
+
+- **Feasible Region**: Convex polygon defined by constraints.
+- **Key Insight**:
+  - Optimal solution lies at a vertex of the feasible region.
+  - Number of vertices: \(O(m^n)\), where \(m\) = constraints, \(n\) = variables.
+
+---
+
+#### **2. Solving Linear Programs**
+- **Simplex Method**:
+  - Iteratively moves along vertices of the feasible region to maximize \(f(x)\).
+  - Practical and efficient for real-world LPs despite exponential worst-case time.
+- **Other Techniques**:
+  - Polynomial time algorithms exist but are less common in practice.
+
+---
+
+#### **3. Weighted Vertex Cover as an LP**
+- **Problem**: Given a graph \(G = (V, E)\) with vertex weights \(w(v)\), find a minimum weight vertex cover.
+- **Formulation as Integer Linear Program (ILP)**:
+  - Minimize \(\sum w(v_j) \cdot x_j\), where \(x_j = 1\) if \(v_j\) is in the cover, 0 otherwise.
+  - Constraints:
+    - For each edge \((v_i, v_j)\): \(x_i + x_j \geq 1\).
+    - \(x_j \in \{0, 1\}\).
+- **Relaxation to LP**:
+  - Relax \(x_j \in \{0, 1\}\) to \(x_j \in [0, 1]\).
+
+- **2-Approximation Algorithm**:
+  - Solve relaxed LP.
+  - Round \(x_j \geq 0.5\) to 1; others to 0.
+  - Cost of solution \(\leq 2 \times \text{OPT}\).
+
+---
+
+#### **4. Set Cover Problem**
+- **Definition**: Cover all elements in \(X = \{x_1, \dots, x_n\}\) using a minimal subset of sets \(\{S_1, \dots, S_m\}\), where \(\bigcup_{j \in I} S_j = X\).
+- **Example**:
+  - Elements: Programming languages.
+  - Sets: Programmers with specific language skills.
+  - Goal: Hire the smallest team covering all languages.
+
+- **Greedy Algorithm**:
+  - Iteratively pick the set covering the most uncovered elements.
+  - Approximation: \(O(\log n)\).
+
+---
+
+#### **5. Analysis of Greedy Algorithm for Set Cover**
+- **Key Idea**: Bound optimal solution (\(\text{OPT}\)).
+  - If \(k\) elements remain and no set covers more than \(t\), then \(\text{OPT} \geq k/t\).
+- **Cost Analysis**:
+  - Cost of greedy solution: \(|I| \leq \text{OPT} \cdot (1 + \ln n)\).
+  - Uses harmonic series bound: \(1 + \frac{1}{2} + \dots + \frac{1}{n} \leq \ln n + O(1)\).
+
+---
+
+#### **6. General Insights**
+- **Linear Programming Summary**:
+  - Objective: Maximize/minimize a linear function.
+  - Constraints: Linear inequalities.
+  - Feasibility: \(Ax \leq b\), \(x \geq 0\).
+
+- **Vertex Cover and Set Cover**:
+  - NP-Hard.
+  - Use LP relaxation and rounding for approximation algorithms.
+
+---
+
+#### **7. Further Questions**
+1. Relationship between Vertex Cover and Set Cover.
+2. Approximation algorithms for weighted set cover.
+3. ILP formulation and rounding techniques for set cover.
+4. Randomized rounding for approximation.
+5. Deterministic rounding based on element frequency.
+
+---
+
+### **1. What is the relationship between Vertex Cover and Set Cover?**
+- **Vertex Cover**:
+  - Covers all edges in a graph by selecting a minimal subset of vertices.
+  - Equivalent to covering all edges (elements) using vertices (sets).
+
+- **Set Cover**:
+  - Generalizes Vertex Cover by allowing arbitrary sets to cover elements.
+  - **Reduction**:
+    - In Vertex Cover, define \( X \) as edges of the graph.
+    - Define \( S_u = \{(u, v) \mid (u, v) \in E\} \), where \( S_u \) corresponds to edges incident on vertex \( u \).
+    - Set Cover selects vertices such that all edges are covered.
+
+- **Algorithm Relationship**:
+  - The greedy algorithm for Set Cover can be adapted to Vertex Cover.
+  - Both problems involve finding a minimal set that satisfies a coverage condition.
+
+---
+
+### **2. Approximation algorithms for weighted set cover.**
+- Weighted Set Cover:
+  - Each set \( S_j \) has a weight \( w(S_j) \).
+  - Goal: Minimize the total weight of selected sets while covering \( X \).
+
+- **Greedy Algorithm for Weighted Set Cover**:
+  1. Initialize \( I = \emptyset \).
+  2. While \( X \neq \emptyset \):
+     - Select set \( S_j \) with the minimum cost per uncovered element: \( \frac{w(S_j)}{|S_j \cap X|} \).
+     - Add \( S_j \) to \( I \) and remove elements in \( S_j \) from \( X \).
+  3. Return \( I \).
+
+- **Approximation**: \( O(\log n) \), similar to unweighted Set Cover.
+
+---
+
+### **3. Integer Linear Program (ILP) for solving the set cover problem.**
+- **Variables**:
+  - \( x_j = 1 \) if \( S_j \) is selected, \( 0 \) otherwise.
+
+- **Objective**:
+  - Minimize \( \sum_{j=1}^m w(S_j) \cdot x_j \).
+
+- **Constraints**:
+  - For each element \( x_i \in X \):
+    \( \sum_{j: x_i \in S_j} x_j \geq 1 \) (every element must be covered).
+  - \( x_j \in \{0, 1\} \).
+
+---
+
+### **4. How to round the ILP to achieve an \( O(\log n) \)-approximation of optimal?**
+- **Steps**:
+  1. Relax the ILP to an LP:
+     - Allow \( x_j \in [0, 1] \) instead of \( \{0, 1\} \).
+  2. Solve the relaxed LP.
+  3. Randomized Rounding:
+     - Add \( S_j \) to the cover with probability \( x_j \).
+     - Iterate until all elements are covered.
+  4. Deterministic Rounding:
+     - Add \( S_j \) if \( x_j \geq \frac{1}{\text{max frequency of an element}} \).
+
+- **Guarantee**:
+  - Randomized rounding ensures \( O(\log n) \)-approximation with high probability.
+  - Deterministic rounding ensures an \( f \)-approximation, where \( f \) is the maximum frequency of any element.
+
+---
+
+### **5. Rounding an ILP with maximum frequency \( f \) to achieve an \( f \)-approximation.**
+- **Deterministic Approach**:
+  1. Solve the relaxed LP.
+  2. For each element \( x_i \), determine the sets \( S_j \) covering it.
+  3. If an element appears in at most \( f \) sets, select all sets where \( x_j \geq \frac{1}{f} \).
+  4. Repeat until all elements are covered.
+
+- **Guarantee**:
+  - Ensures the total weight of selected sets is at most \( f \times \text{OPT} \), providing an \( f \)-approximation. 
+
+---
