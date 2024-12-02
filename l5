@@ -1,0 +1,90 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 5
+#### **Topic: Lovász Local Lemma and Applications**
+
+---
+
+### **1. Linear Programming (LP)-Based Algorithm for CNF-SAT**
+- **ILP Formulation Recap**:
+  \[
+  \text{Maximize } \sum_{j=1}^m w_j z_j
+  \]
+  Subject to:
+  - \( \sum_{i \in P_j} y_i + \sum_{i \in N_j} (1 - y_i) \geq z_j \),
+  - \( 0 \leq y_i, z_j \leq 1 \) and \( y_i, z_j \in \mathbb{Z} \).
+  - \( P_j \): Positive literals in clause \( C_j \).
+  - \( N_j \): Negative literals in \( C_j \).
+
+- **LP Relaxation**:
+  - Relax \( y_i, z_j \in \{0, 1\} \) to \( y_i, z_j \in [0, 1] \).
+  - Solve LP to get \( y^*_i, z^*_j \).
+  - Approximate solution by sampling \( x_i = 1 \) with probability \( y^*_i \).
+
+#### **1.1 Approximation Ratio**
+- **Theorem**: The LP-based algorithm achieves a \( (1 - \frac{1}{e}) \)-approximation.
+- **Proof Outline**:
+  - Compute \( P(C_j \text{ not satisfied}) \) using A.M.-G.M. inequality.
+  - Use concavity of \( f(z) = 1 - (1 - z)^{l_j} \) to bound the expected number of satisfied clauses:
+    \[
+    E[\text{\# satisfied clauses}] \geq \left( 1 - \frac{1}{e} \right) \cdot \text{OPT}.
+    \]
+
+#### **1.2 Combined Algorithm**
+- **Idea**:
+  - Combine LP-based algorithm (\( \frac{1}{e} \)-approximation) with randomized algorithm (\( \frac{1}{2} \)-approximation for small \( l_j \)).
+- **Result**:
+  - Achieves an approximation ratio of 0.75 for CNF-SAT.
+
+---
+
+### **2. Constraint Satisfaction Problems (CSP)**
+- **General CSP**:
+  - Variables \( x_i \) have domain \( D_i \).
+  - Constraints: \( x_{i_1} \neq \alpha_1 \lor x_{i_2} \neq \alpha_2 \lor \ldots \lor x_{i_k} \neq \alpha_k \).
+  - Goal: Determine if all constraints can be satisfied.
+
+#### **2.1 Lovász Local Lemma (LLL)**
+- **Statement**:
+  - Let \( w(C) \) represent the probability of constraint \( C \) being unsatisfied.
+  - If \( \forall C \in \phi, w(C) \leq \mu_C \prod_{C' \in \Gamma_\phi(C)} (1 - \mu_{C'}) \), then \( \phi \) is satisfiable.
+- **Key Terms**:
+  - \( w(C) = \prod_{x_i \in vbl(C)} \frac{1}{|D_i|} \): Probability of \( C \) being unsatisfied.
+  - \( \Gamma_\phi(C) \): Neighborhood of \( C \), i.e., constraints sharing variables with \( C \).
+
+- **Proof Outline**:
+  - Probabilistic method:
+    - Show \( P[C_1 \land C_2 \land \ldots \land C_m] > 0 \) using conditional probabilities.
+    - Inductive argument to bound \( P[C_j | C_1, \ldots, C_{j-1}] \).
+
+---
+
+### **3. Algorithms Leveraging LLL**
+
+#### **3.1 Moser’s Algorithm**
+- **Algorithm**:
+  - Randomly assign values to all variables.
+  - While any constraint \( C_j \) is unsatisfied:
+    - Randomly reassign values to variables in \( C_j \).
+- **Expected Runs**:
+  \[
+  E[\text{\# loop iterations}] = \sum_{j=1}^m \frac{\mu_j}{1 - \mu_j}.
+  \]
+
+#### **3.2 Application: (d, k)-CSP Satisfiability**
+- **Theorem**:
+  - A \( (d, k) \)-CSP is satisfiable if \( \forall C \in \phi, |\Gamma_\phi(C)| \leq \frac{d^k}{e} - 1 \).
+- **Proof**:
+  - Choose \( \mu = \frac{e}{d^k} \) for all \( C \).
+  - Satisfiability follows if \( w(C) \leq \mu (1 - \mu)^{|\Gamma_\phi(C)|} \).
+
+---
+
+### **4. Summary**
+- **LP-Based Algorithm**:
+  - Approximation ratio: \( (1 - \frac{1}{e}) \).
+  - Combined with randomization: Approximation ratio of 0.75.
+- **LLL**:
+  - Provides a probabilistic guarantee for satisfiability of sparse CSPs.
+  - Enables algorithms like Moser’s to find solutions efficiently for certain CSPs.
+- **Key Insights**:
+  - Sparsity and independence of constraints are critical for satisfiability guarantees.
+  - LLL is a powerful tool for analyzing CSPs and improving algorithms.
