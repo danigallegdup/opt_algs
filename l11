@@ -1,0 +1,98 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 11
+#### **Topic: Ellipsoid Method**
+
+---
+
+### **1. Introduction**
+- **Purpose**:
+  - Explore the Ellipsoid Method, a polynomial-time algorithm for solving the **feasibility decision problem** in Linear Programming (LP).
+  - Extend understanding of LP duality and its implications for optimization problems.
+
+- **Motivation**:
+  - LP feasibility problems lie in \( \text{NP} \cap \text{co-NP} \), and efficient solutions are crucial for computational optimization.
+
+---
+
+### **2. The Ellipsoid Method**
+#### **2.1 Overview**
+- **Objective**:
+  - Determine if a system of linear equations:
+    \[
+    Ax = b, \quad x \geq 0
+    \]
+    has a feasible solution.
+- **Approach**:
+  - Iteratively reduce the search space (ellipsoids) until a feasible point is found or infeasibility is proven.
+
+#### **2.2 Process**
+1. **Initial Setup**:
+   - The feasible region \( K \) is bounded within a ball of radius \( B\sqrt{n} \), where \( B = 2^{\text{poly}(\kappa)} \), and \( \kappa \) is the bitlength of the input.
+
+2. **Ellipsoid Iteration**:
+   - At each step:
+     - Check if the center \( \vec{c} \) of the current ellipsoid lies within \( K \).
+     - If \( \vec{c} \notin K \), determine a separating hyperplane to exclude infeasible regions.
+     - Construct a new ellipsoid \( E_{k+1} \) with reduced volume:
+       \[
+       \frac{\text{Vol}(E_{k+1})}{\text{Vol}(E_k)} < 1 - \frac{1}{n}.
+       \]
+
+3. **Termination**:
+   - If a feasible solution exists, it is found after \( O(n \cdot \text{poly}(\kappa)) \) iterations.
+   - If no feasible solution exists, the algorithm proves infeasibility.
+
+#### **2.3 Complexity**
+- **Time Complexity**:
+  - The algorithm completes in \( O(n \cdot \text{poly}(\kappa)) \) steps.
+  - Each iteration involves computing the separating hyperplane and updating the ellipsoid, both achievable in polynomial time.
+
+---
+
+### **3. LP Duality**
+#### **3.1 Concepts**
+- **Primal Problem**:
+  \[
+  \text{Maximize } c^\top x \quad \text{subject to } Ax \leq b, \, x \geq 0.
+  \]
+- **Dual Problem**:
+  \[
+  \text{Minimize } b^\top y \quad \text{subject to } A^\top y \geq c, \, y \geq 0.
+  \]
+- **Strong Duality Theorem**:
+  - If the primal and dual problems have finite solutions, their optimal values are equal:
+    \[
+    c^\top x^* = b^\top y^*.
+    \]
+
+#### **3.2 Implications**
+- Duality provides a framework to:
+  - Verify optimality of solutions.
+  - Identify structural properties of optimization problems.
+- Applications:
+  - Max-Flow Min-Cut Theorem: Relates maximum flow in a network to the capacity of the minimum cut.
+
+---
+
+### **4. Maximum Bipartite Matching**
+#### **4.1 Problem**
+- Find the maximum-weight matching in a bipartite graph \( G = (V, E) \) with edge weights \( w(u, v) \geq 0 \).
+
+#### **4.2 LP Formulation**
+- Maximize:
+  \[
+  \sum_{(u, v) \in E} x_{uv} w(u, v)
+  \]
+  Subject to:
+  - \( \sum_{u : (u, v) \in E} x_{uv} \leq 1, \quad \forall v \in V. \)
+  - \( 0 \leq x_{uv} \leq 1, \quad \forall (u, v) \in E. \)
+
+#### **4.3 Insights**
+- LP solutions are guaranteed to be integral due to the **total unimodularity** of the constraint matrix.
+- Efficient algorithms like the Hungarian Method can directly solve the problem.
+
+---
+
+### **5. Conclusion**
+- The Ellipsoid Method offers a polynomial-time solution for LP feasibility problems.
+- LP duality provides deep insights into optimization problems, enabling simplifications and efficient algorithms.
+- Applications like Max-Flow Min-Cut and Maximum Bipartite Matching demonstrate the practical utility of these concepts.
