@@ -1,0 +1,234 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 3
+#### **Topic: The Traveling Salesman Problem (TSP)**
+
+---
+
+### **1. Introduction**
+- **Definition**:
+  - Given a set of points (nodes) \( V \) and a distance function \( d \), find a minimum-cost cycle that visits every point in \( V \) exactly once.
+  - **Cost**: \( \sum_{e \in C} d(e) \), where \( C \) is the cycle.
+
+- **Key Properties**:
+  - Non-negative distances (\( d(x, y) \geq 0 \)).
+  - **Goal**: Minimize cost of the cycle.
+
+---
+
+### **2. Variants of TSP**
+1. **Metric TSP (Triangle Inequality Holds)**:
+   - \( d(x, z) \leq d(x, y) + d(y, z) \).
+
+2. **General TSP**:
+   - No restrictions on the distance function.
+
+3. **With Repeats**:
+   - Nodes may be revisited in the cycle.
+
+4. **No Repeats**:
+   - Each node is visited exactly once.
+
+**Summary Table**:
+| Variants            | Repeats Allowed | No Repeats |
+|---------------------|-----------------|------------|
+| **Metric TSP**      | M-R TSP         | M-NR TSP   |
+| **General TSP**     | G-R TSP         | G-NR TSP   |
+
+- **Hardness**:
+  - All variants are **NP-hard**, even for simple cases.
+  - G-NR TSP is especially difficult to approximate with any constant factor.
+
+---
+
+### **3. Equivalence Between Variants**
+1. **M-R TSP = M-NR TSP**:
+   - Triangle inequality allows for shortcuts, removing repeated nodes without increasing cost.
+
+2. **M-R TSP = G-R TSP**:
+   - Transform general distances into metric distances using **metric completion**:
+     - Compute shortest paths between all pairs of nodes.
+     - Replace distances with the shortest path distances.
+
+3. **Proof Techniques**:
+   - Use reductions and triangle inequality to show approximation equivalences.
+
+---
+
+### **4. Approximation Algorithms**
+
+#### **4.1 2-Approximation Algorithm for Metric TSP**
+- **Steps**:
+  1. Construct Minimum Spanning Tree (MST) \( T \) of the graph.
+  2. Perform Depth-First Search (DFS) traversal of \( T \) to construct a cycle \( C \).
+  3. Return \( C \).
+
+- **Analysis**:
+  - \( \text{cost}(T) \leq \text{OPT} \) because the MST is a subgraph of any cycle.
+  - \( \text{cost}(C) = 2 \cdot \text{cost}(T) \) (each edge traversed twice in DFS).
+  - \( \text{cost}(C) \leq 2 \cdot \text{OPT} \).
+
+#### **4.2 Christofides Algorithm: 1.5-Approximation for Metric TSP**
+- **Steps**:
+  1. Compute MST \( T \).
+  2. Identify odd-degree nodes in \( T \) (set \( O \)).
+  3. Compute a **minimum-cost perfect matching** \( M \) on \( O \).
+  4. Combine \( T \) and \( M \) to form a multigraph \( G \) with even degrees.
+  5. Find an Eulerian Cycle \( C \) in \( G \).
+  6. Shortcut \( C \) to remove repeated nodes (triangle inequality ensures cost does not increase).
+
+- **Cost Analysis**:
+  - \( \text{cost}(T) \leq \text{OPT} \).
+  - \( \text{cost}(M) \leq \text{OPT} / 2 \) (due to triangle inequality).
+  - Total \( \text{cost}(C) \leq 1.5 \cdot \text{OPT} \).
+
+---
+
+### **5. Eulerian Cycles**
+- **Definition**:
+  - A cycle that traverses every edge of a graph exactly once.
+
+- **Conditions**:
+  1. Graph is connected.
+  2. Every vertex has an even degree.
+
+- **Construction**:
+  - Use Depth-First Search to find and stitch together cycles in connected components.
+
+---
+
+### **6. Matchings**
+- **Definition**:
+  - A **matching** is a set of edges where no two edges share a vertex.
+  - A **perfect matching** pairs all vertices exactly once.
+
+- **Relevance to TSP**:
+  - Odd-degree nodes in the MST need to be paired using a perfect matching to create an Eulerian graph.
+
+- **Key Result**:
+  - Minimum-cost perfect matching can be computed in polynomial time (Edmonds' Blossom Algorithm).
+
+---
+
+### **7. Proof of 1.5-Approximation**
+- **Key Lemmas**:
+  - There are always an even number of odd-degree nodes in a graph.
+  - \( \text{cost}(M) \leq \text{OPT} / 2 \) using triangle inequality and perfect matchings.
+
+- **Overall Cost**:
+  - \( \text{cost}(C) = \text{cost}(T) + \text{cost}(M) \leq \text{OPT} + \text{OPT} / 2 = 1.5 \cdot \text{OPT} \).
+
+---
+
+### **8. Insights and Applications**
+1. **Practicality**:
+   - Christofides Algorithm is widely used due to its better approximation ratio compared to the 2-approximation.
+
+2. **Challenges**:
+   - G-NR TSP remains intractable for approximations due to lack of triangle inequality.
+
+3. **Graph-Theoretic Connections**:
+   - Eulerian Cycles and Matchings are critical tools for solving TSP efficiently.
+
+---
+
+### **9. Summary**
+- TSP is a foundational problem in combinatorial optimization.
+- Approximations rely on leveraging graph properties (MST, matchings, Eulerian cycles) and triangle inequality.
+- Christofides Algorithm achieves the best-known approximation ratio of 1.5 for Metric TSP.
+
+### Answers to Lecture 3 Questions: The Traveling Salesman Problem (TSP)
+
+---
+
+#### **1. What are the four variants of the TSP problem, and how are they related?**
+1. **Variants**:
+   - **Metric with Repeats (M-R TSP)**: Distance satisfies the triangle inequality; nodes can repeat.
+   - **Metric No Repeats (M-NR TSP)**: Distance satisfies the triangle inequality; nodes visited exactly once.
+   - **General with Repeats (G-R TSP)**: No triangle inequality; nodes can repeat.
+   - **General No Repeats (G-NR TSP)**: No triangle inequality; nodes visited exactly once.
+
+2. **Relationship**:
+   - **M-R TSP = M-NR TSP**:
+     - If repeats are allowed, the solution without repeats is still optimal because of the triangle inequality.
+   - **M-R TSP = G-R TSP**:
+     - Metric completion converts general distances into a metric using shortest paths without increasing cost.
+   - **Reduction**:
+     - Algorithm for one variant can approximate other variants through transformations (e.g., adding or removing repeats).
+
+---
+
+#### **2. Why is the TSP problem hard, and what approximations are possible?**
+- **Hardness**:
+  - All variants are **NP-hard**, even for simple cases like planar graphs with degree 3.
+  - **General No Repeats TSP (G-NR TSP)**:
+    - Hard to approximate with any constant factor unless \( P = NP \).
+  - Metric TSP variants are easier to approximate due to the triangle inequality.
+
+- **Approximations**:
+  - **2-Approximation Algorithm**:
+    - Builds a Minimum Spanning Tree (MST) and doubles edges to construct a tour.
+  - **1.5-Approximation Algorithm (Christofides)**:
+    - Uses MST, perfect matching, and Eulerian cycle to improve over the 2-approximation.
+
+---
+
+#### **3. Explain the 2-Approximation Algorithm for Metric TSP.**
+1. **Steps**:
+   - Build MST \( T \) for the input graph \( G \).
+   - Perform a Depth-First Search (DFS) traversal of \( T \) to form a cycle \( C \).
+   - Return \( C \).
+
+2. **Analysis**:
+   - \( \text{cost}(T) \leq \text{OPT} \) (MST cost ≤ optimal cycle cost).
+   - DFS traversal doubles edges of \( T \), so \( \text{cost}(C) = 2 \cdot \text{cost}(T) \).
+   - \( \text{cost}(C) \leq 2 \cdot \text{OPT} \), yielding a 2-approximation.
+
+---
+
+#### **4. How does the Christofides Algorithm improve to a 1.5-Approximation?**
+1. **Steps**:
+   - Build MST \( T \) for the input graph.
+   - Identify nodes with odd degree in \( T \) (set \( O \)).
+   - Compute a **minimum-cost perfect matching** \( M \) on \( O \).
+   - Combine \( T \) and \( M \) to form a multigraph \( G \) with even degrees.
+   - Construct an **Eulerian Cycle** \( C \) from \( G \) and convert it to a TSP cycle.
+
+2. **Key Insight**:
+   - Adding \( M \) ensures even degrees without doubling edges unnecessarily.
+   - **Cost Analysis**:
+     - \( \text{cost}(T) \leq \text{OPT} \).
+     - \( \text{cost}(M) \leq \text{OPT} / 2 \).
+     - Total cost \( \text{cost}(C) = \text{cost}(T) + \text{cost}(M) \leq 1.5 \cdot \text{OPT} \).
+
+---
+
+#### **5. What are Eulerian Cycles, and how are they used in TSP?**
+1. **Definition**:
+   - A cycle in a graph that traverses every edge exactly once.
+
+2. **Properties**:
+   - Exists if:
+     - The graph is connected.
+     - Every vertex has an even degree.
+
+3. **Use in TSP**:
+   - Multigraph from MST and matching ensures even degrees.
+   - Eulerian Cycle constructed in polynomial time becomes the basis for the TSP tour.
+
+---
+
+#### **6. Why are nodes with odd degrees paired using perfect matching in Christofides?**
+- **Reason**:
+  - Graph must have even degrees for an Eulerian Cycle.
+- **Guarantee**:
+  - The number of odd-degree nodes is always even (sum of degrees is even).
+- **Matching**:
+  - A **minimum-cost perfect matching** on odd-degree nodes minimizes additional cost.
+
+---
+
+#### **7. What is the role of the triangle inequality in TSP approximations?**
+- Ensures validity of shortcuts:
+  - Skipping repeated nodes in the tour does not increase cost.
+- Critical for:
+  - Proving equivalence between repeats and no-repeats variants.
+  - Maintaining approximation bounds when simplifying cycles.
