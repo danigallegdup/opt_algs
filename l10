@@ -1,0 +1,97 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 10
+#### **Topic: Linear Programming (LP)**
+
+---
+
+### **1. Introduction to Linear Programming**
+- **Definition**:
+  - LP is a technique to solve optimization problems where both the objective function and constraints are linear.
+  - Objective: Maximize or minimize a linear function subject to linear constraints.
+
+- **Historical Milestones**:
+  1. **Simplex Method (1947)**:
+     - Developed by George Dantzig.
+     - Efficient in practice but does not guarantee polynomial-time performance.
+  2. **Ellipsoid Method (1979)**:
+     - Proposed by Khachiyan.
+     - Demonstrates that LP can be solved in polynomial time.
+
+---
+
+### **2. Problem Formulation in LP**
+#### **2.1 Types of LP Problems**
+1. **Feasibility Problem**:
+   - Determine if a solution \( x \) exists such that:
+     \[
+     Ax \geq b
+     \]
+2. **Optimization Problem**:
+   - Maximize or minimize a linear objective function:
+     \[
+     \text{Maximize } c^\top x \text{ subject to } Ax \geq b.
+     \]
+
+#### **2.2 Feasibility**
+- To determine if a system of inequalities is feasible:
+  - Identify contradictions (e.g., \( 0 \geq 1 \)).
+  - Use **positive linear combinations** of inequalities to derive contradictions.
+
+#### **2.3 Farkas' Lemma**
+- **Statement**:
+  - If \( Ax \geq b \) has no solution, there exists \( \lambda \geq 0 \) such that:
+    \[
+    \lambda^\top A = 0, \quad \lambda^\top b = 1.
+    \]
+- **Proof Outline**:
+  - Combine inequalities using non-negative multipliers to derive contradictions.
+
+---
+
+### **3. Complexity of Linear Programming**
+#### **3.1 LP in NP and co-NP**
+- **Theorem**:
+  - If \( Ax \geq b \) has no solution, there exists a rational proof of infeasibility with bitlength polynomial in the input size \( L \).
+- **Implications**:
+  - LP is in the complexity class \( \text{NP} \cap \text{co-NP} \).
+
+---
+
+### **4. Solving Linear Programs**
+#### **4.1 Bounded Feasible Region**
+- **Definition**:
+  - A bounded feasible region forms a convex polytope.
+- **Properties**:
+  - Any vertex of the polytope corresponds to a solution defined by \( n \) linear equalities.
+  - The bitlength of the solution is bounded by the bitlength of the input data.
+
+#### **4.2 Unbounded Feasible Region**
+- **Handling Unbounded Regions**:
+  - Introduce box constraints \( -B \leq x_i \leq B \) where \( B \) is chosen to ensure feasibility.
+  - This ensures the region is bounded without excluding valid solutions.
+
+---
+
+### **5. Search vs Decision**
+#### **5.1 Search Problem**
+- **Objective**:
+  - Given \( Ax \geq b \), find a feasible \( x \) using a decision oracle.
+- **Process**:
+  - Iteratively fix variables (\( x_1 = 0, x_2 = 0, \ldots \)) and check feasibility using the oracle.
+
+#### **5.2 Optimization Problem**
+- **Objective**:
+  - Maximize \( c^\top x \) subject to \( Ax \geq b \).
+- **Approach**:
+  - Use binary search to find the largest \( t \) such that:
+    \[
+    c^\top x \geq t
+    \]
+  - Ensure feasibility of \( x \) for each \( t \).
+
+---
+
+### **6. Summary**
+- LP is a foundational tool in optimization with applications in feasibility testing and optimization problems.
+- Farkas' Lemma and duality principles provide theoretical guarantees for solving LPs.
+- LP is computationally efficient, belonging to the class \( \text{NP} \cap \text{co-NP} \).
+
