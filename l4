@@ -1,0 +1,130 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 4
+#### **Topic: Conjunctive Normal Form Satisfaction (CNF-SAT)**
+
+---
+
+### **1. Introduction to CNF-SAT**
+- **Definition**:
+  - A **Constraint Satisfaction Problem (CSP)** is defined as:
+    - \( X \): Set of variables.
+    - \( D \): Domains of variables.
+    - \( C \): Constraints on variables.
+  - The goal is to assign values to variables such that all constraints are satisfied.
+
+- **CNF-SAT**:
+  - Special CSP where:
+    - Variables \( X \) are Boolean (\( \{True, False\} \)).
+    - Constraints are **clauses** in Conjunctive Normal Form (CNF), i.e., a conjunction of disjunctions of literals.
+
+- **Key Terms**:
+  - **Literal**: A variable or its negation (\( x \) or \( \neg x \)).
+  - **Clause**: Disjunction of literals (\( x \lor \neg y \lor z \)).
+  - **Problem**: Find an assignment of Boolean values that satisfies all clauses.
+
+- **Complexity**:
+  - CNF-SAT is NP-complete and NP-hard, even for special cases like 3-SAT.
+
+---
+
+### **2. Weighted CNF-SAT**
+- **Definition**:
+  - Each clause \( C_i \) has an associated weight \( w_i \).
+  - Goal: Maximize the sum of weights of satisfied clauses.
+
+- **Variants**:
+  - **k-CNF-SAT**:
+    - Each clause has exactly \( k \) literals.
+  - **General Weighted CNF-SAT**:
+    - Clauses may have varying numbers of literals.
+
+---
+
+### **3. Approximation Algorithms for Weighted k-CNF-SAT**
+
+#### **3.1 Randomized Algorithm**
+- **Algorithm**:
+  1. Assign \( True \) or \( False \) to each variable with equal probability (0.5).
+  2. Compute the sum of weights of satisfied clauses.
+
+- **Performance**:
+  - Expected value of satisfied weights:
+    \[
+    E[w^*] = (1 - \frac{1}{2^k}) \cdot OPT
+    \]
+  - Approximation ratio: \( (1 - \frac{1}{2^k}) \).
+
+#### **3.2 Deterministic Algorithm**
+- **Key Idea**:
+  - Use the law of total expectation to iteratively fix variables while maximizing conditional expectation.
+
+- **Algorithm**:
+  1. Initialize all variables as unfixed.
+  2. For each variable \( x_i \):
+     - Compute \( E[w^* | x_i = True] \) and \( E[w^* | x_i = False] \).
+     - Fix \( x_i \) to the value that maximizes conditional expectation.
+     - Update the problem by substituting the fixed value.
+  3. Return the sum of weights of satisfied clauses.
+
+- **Performance**:
+  - Approximation ratio: \( (1 - \frac{1}{2^k}) \).
+
+---
+
+### **4. Approximation for General Weighted CNF-SAT**
+
+#### **4.1 Randomized Algorithm for Positive Unit Clauses**
+- **Assumption**:
+  - If a clause contains a single literal (\( k=1 \)), it is positive (\( x_i \), not \( \neg x_i \)).
+
+- **Algorithm**:
+  1. Assign \( True \) to each variable with probability \( p > 0.5 \), where \( p = \frac{\sqrt{5} - 1}{2} \).
+  2. Compute the sum of weights of satisfied clauses.
+
+- **Performance**:
+  - Approximation ratio: \( \frac{\sqrt{5} - 1}{2} \approx 0.618 \).
+
+#### **4.2 General Weighted CNF-SAT**
+- **Key Idea**:
+  - Bias assignments based on clause weights and maximize the probability of satisfying high-weight clauses.
+
+- **Algorithm**:
+  1. Use the same randomized algorithm but adjust weights of negative clauses.
+  2. Run the algorithm iteratively for \( p = \frac{\sqrt{5} - 1}{2} \).
+
+- **Performance**:
+  - Approximation ratio: \( \frac{\sqrt{5} - 1}{2} \approx 0.618 \).
+
+---
+
+### **5. Linear Programming Formulation**
+- **Goal**:
+  - Maximize \( \sum w_i \cdot y_i \), where \( y_i = 1 \) if clause \( C_i \) is satisfied, \( 0 \) otherwise.
+
+- **Constraints**:
+  1. \( x_i \in \{0, 1\} \): Boolean variables.
+  2. \( y_i \in \{0, 1\} \): Clause satisfaction indicators.
+  3. For each clause \( C_i = (l_{i1} \lor l_{i2} \lor ... \lor l_{ik}) \):
+     \[
+     \sum \text{(satisfied literals in } C_i) \geq y_i
+     \]
+
+- **Relaxation**:
+  - Allow \( x_i, y_i \in [0, 1] \) for solving as a linear program (LP).
+
+- **Solution**:
+  - Solve LP to get fractional solutions.
+  - Use randomized rounding to obtain integer solutions.
+
+---
+
+### **6. Summary of Results**
+- **Weighted k-CNF-SAT**:
+  - Randomized and deterministic algorithms with approximation ratio \( (1 - \frac{1}{2^k}) \).
+- **Positive Unit Clauses**:
+  - Approximation ratio: \( \frac{\sqrt{5} - 1}{2} \).
+- **General CNF-SAT**:
+  - LP relaxation and rounding yield \( \frac{\sqrt{5} - 1}{2} \)-approximation.
+
+---
+
+Let me know if you need further details or explanations!
