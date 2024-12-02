@@ -1,0 +1,80 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 7
+#### **Topic: Network Flow Problem (II)**
+
+---
+
+### **1. Recap**
+- **Flow Definition**:
+  - A flow \( f: E \to \mathbb{R}_{\geq 0} \) satisfies:
+    1. **Conservation**: For all \( v \in V \setminus \{s, t\} \):
+       \[
+       \sum_{u \in V} f(u \to v) = \sum_{w \in V} f(v \to w)
+       \]
+    2. **Capacity Constraint**: For all edges \( u \to v \):
+       \[
+       0 \leq f(u \to v) \leq c(u \to v)
+       \]
+- **Ford-Fulkerson Algorithm**:
+  - Uses augmenting paths to compute maximum flow.
+  - Runtime: \( O(|E| \cdot f^*) \), where \( f^* \) is the maximum flow.
+  - Poor augmenting path choices (e.g., alternating small paths) lead to inefficiency.
+
+---
+
+### **2. Flow Decomposition Theorem**
+- **Concept**:
+  - Any flow can be decomposed into:
+    - Directed path flows from \( s \) to \( t \).
+    - Directed cycle flows.
+
+- **Key Results**:
+  - A flow is a positive linear combination of path flows and cycle flows.
+  - The sum of paths and cycles is at most the number of edges \( |E| \).
+
+- **Proof Outline**:
+  1. For circulations (flows with zero net value):
+     - Induction on the number of edges with positive flow shows decomposition into cycles.
+  2. For general flows:
+     - Add a reverse flow from \( t \) to \( s \) to convert to a circulation.
+     - Decompose into cycles and transform cycles back into paths.
+
+---
+
+### **3. Edmonds-Karp Algorithm: Fat Pipes**
+- **Improvement**:
+  - Avoid inefficient paths by selecting augmenting paths with the largest bottleneck capacity.
+- **Algorithm**:
+  1. Use modified Dijkstra’s algorithm to find the path with the maximum bottleneck.
+  2. Augment flow along the selected path.
+- **Complexity**:
+  - \( O(|E| \log |V|) \) per iteration for finding the path.
+  - Total: \( O(|E|^2 \log |V|) \) with log-scale reduction in flow.
+
+---
+
+### **4. Dinitz Algorithm**
+- **Improvement**:
+  - Chooses augmenting paths with the minimum number of edges (shortest path).
+- **Algorithm**:
+  1. Use BFS to find the shortest augmenting path.
+  2. Augment flow along the selected path.
+- **Complexity**:
+  - Each edge disappears at most \( |V|^2 \) times.
+  - Runtime: \( O(|E| \cdot |V|^2) \).
+
+---
+
+### **5. Applications**
+1. **Edge-Disjoint Paths**:
+   - Find the maximum number of edge-disjoint paths from \( s \) to \( t \).
+2. **Vertex-Disjoint Paths**:
+   - Find the maximum number of paths from \( s \) to \( t \) that do not share any intermediate vertices.
+
+---
+
+### **6. Recent Developments**
+- **Orlin and Gong (2019)**:
+  - Proposed a faster max-flow algorithm with \( O(|V| \cdot |E|) \) complexity.
+- **Chen et al. (2022)**:
+  - Achieved almost-linear time complexity \( O(|E|^{1+O(1)} \log |f^*|) \) for max-flow problems.
+
