@@ -1,0 +1,100 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 9
+#### **Topic: Semidefinite Programming (SDP)**
+
+---
+
+### **1. Introduction to Semidefinite Programming**
+- **Definition**:
+  - Extends linear programming (LP) by incorporating constraints that cannot be expressed linearly.
+  - SDP involves optimizing a linear objective function over a convex feasible region defined by semidefinite constraints.
+
+- **Applications**:
+  - Used to approximate solutions for combinatorial optimization problems such as MaxCut.
+
+---
+
+### **2. MaxCut Problem**
+- **Definition**:
+  - Given a graph \( G = (V, E) \) with edge weights \( w(u, v) \geq 0 \), partition \( V \) into two subsets \( S \) and \( T \) to maximize the total weight of edges between \( S \) and \( T \).
+  
+- **Challenges**:
+  - Greedy algorithms and LP relaxations provide an approximation factor of \( 0.5 \).
+  - SDP relaxation achieves a better approximation factor of \( 0.87856 \) under the Unique Games Conjecture.
+
+---
+
+### **3. Semidefinite Programming Formulation for MaxCut**
+- **Initial ILP Formulation**:
+  \[
+  \text{Maximize } \sum_{(u, v) \in E} y_{uv} w(u, v)
+  \]
+  Subject to:
+  - \( y_{uv} = |x_u - x_v| \), where \( x_u, x_v \in \{0, 1\} \).
+
+- **Relaxation to SDP**:
+  - Replace binary variables \( x_v \) with continuous vectors \( z_v \in \mathbb{R}^n \).
+  - Maximize:
+    \[
+    \sum_{(u, v) \in E} \left(\frac{1}{2} - \frac{1}{2} z_u \cdot z_v\right) w(u, v)
+    \]
+  Subject to:
+  - \( z_v \cdot z_v = 1 \) (unit vectors).
+  - \( z_u \cdot z_v \) is the dot product of \( z_u \) and \( z_v \).
+
+- **Positive Semidefinite (PSD) Constraint**:
+  - The matrix \( Y = (z_u \cdot z_v)_{u, v} \) must be PSD.
+
+---
+
+### **4. Rounding the SDP Solution**
+- **Objective**:
+  - Convert SDP solution into an approximate integer solution.
+
+- **Rounding Method**:
+  1. Randomly select a hyperplane through the origin.
+  2. Partition vertices based on the side of the hyperplane where their vectors lie.
+
+- **Probability**:
+  - The probability of edge \( (u, v) \) being cut:
+    \[
+    \frac{\theta_{uv}}{\pi}
+    \]
+    Where \( \theta_{uv} \) is the angle between \( z_u \) and \( z_v \).
+
+- **Performance**:
+  - Expected total weight of edges cut:
+    \[
+    \mathbb{E}[\text{Total weight}] = \sum_{(u, v) \in E} w(u, v) \cdot \frac{\theta_{uv}}{\pi}
+    \]
+
+---
+
+### **5. Approximation Guarantee**
+- **Theorem**:
+  - Rounding achieves an approximation factor of \( 0.87856 \).
+  
+- **Proof Sketch**:
+  - Show that:
+    \[
+    \frac{\theta_{uv} / \pi}{\frac{1}{2} - \frac{1}{2} \cos \theta_{uv}} \geq 0.87856 \quad \forall \theta_{uv}.
+    \]
+  - Use this ratio to bound the rounded solution relative to the SDP optimum.
+
+---
+
+### **6. Key Properties of PSD Matrices**
+- **Definition**:
+  - A symmetric matrix \( Y \) is PSD if:
+    \[
+    c^\top Y c \geq 0 \quad \forall c \in \mathbb{R}^n.
+    \]
+- **Properties**:
+  - Can be checked using Cholesky decomposition in polynomial time.
+  - A PSD matrix \( Y \) can be expressed as \( Y = Z^\top Z \) for some matrix \( Z \).
+
+---
+
+### **7. Summary**
+- SDP provides a powerful tool for solving problems like MaxCut, achieving better approximation guarantees than LP relaxation.
+- The \( 0.87856 \)-approximation factor for MaxCut is the best known under the Unique Games Conjecture.
+- The SDP relaxation and rounding technique balance mathematical rigor with practical computability.
