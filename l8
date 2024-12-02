@@ -1,0 +1,104 @@
+### Detailed Notes: CS4234 Optimization Algorithms - Lecture 8
+#### **Topic: Network Flow Problem (III)**
+
+---
+
+### **1. Edge-Disjoint Paths**
+- **Problem**:
+  - Find the maximum number of edge-disjoint paths between source \( s \) and sink \( t \) in a directed graph \( G = (V, E) \).
+
+- **Definition**:
+  - Two paths are edge-disjoint if they do not share any edge.
+
+- **Solution**:
+  - Assign a capacity of 1 to each edge.
+  - Compute the maximum flow using a max-flow algorithm.
+  - The max-flow value corresponds to the number of edge-disjoint paths.
+
+- **Proof**:
+  - Flow decomposition theorem ensures the flow can be split into disjoint paths.
+  - Capacity of 1 ensures paths do not share edges.
+
+---
+
+### **2. Vertex Capacities**
+- **Problem**:
+  - Given vertex capacities instead of edge capacities, compute the maximum flow.
+
+- **Transformation**:
+  - Replace each vertex \( v \) with two nodes \( x_v \) and \( y_v \).
+  - Add an edge \( (x_v, y_v) \) with capacity \( c(v) \).
+  - Redirect incoming edges to \( x_v \) and outgoing edges from \( y_v \).
+
+- **Result**:
+  - Solve the modified graph using standard max-flow algorithms.
+
+---
+
+### **3. Vertex-Disjoint Paths**
+- **Definition**:
+  - Two paths are vertex-disjoint if they do not share any vertices except \( s \) and \( t \).
+
+- **Solution**:
+  - Assign a vertex capacity of 1 to each vertex.
+  - Solve the max-flow problem with vertex capacities.
+
+---
+
+### **4. Bipartite Matching**
+- **Definitions**:
+  - **Bipartite Graph**: A graph \( G = (L, R, E) \) where \( L \cap R = \emptyset \), and edges only connect \( L \) to \( R \).
+  - **Matching**: A set of edges such that no two edges share a vertex.
+
+- **Solution**:
+  - Construct a flow network:
+    - Add a source \( s \) connected to all vertices in \( L \).
+    - Add a sink \( t \) connected to all vertices in \( R \).
+    - Assign capacity 1 to all edges.
+  - Run the max-flow algorithm to find the maximum matching.
+
+- **Proof**:
+  - Each edge in the flow with value 1 corresponds to a matching edge.
+  - Flow capacity constraints ensure no vertex is used more than once.
+
+---
+
+### **5. Disjoint Path Cover of Acyclic Directed Graphs**
+- **Definition**:
+  - A disjoint path cover is a set of paths such that each vertex appears in exactly one path.
+
+- **Problem**:
+  - Minimize the number of paths in the cover.
+
+- **Solution**:
+  - Transform the graph into a bipartite graph:
+    - Split each vertex \( v \) into \( v_{\text{in}} \) and \( v_{\text{out}} \).
+    - Add edges between \( u_{\text{out}} \) and \( v_{\text{in}} \) if \( (u, v) \) exists in the original graph.
+  - Find the maximum bipartite matching.
+  - The number of unmatched vertices corresponds to the number of paths.
+
+---
+
+### **6. Minimizing Teaching Staff**
+- **Problem**:
+  - Minimize the number of teaching staff required to teach a set of classes, considering:
+    - Class start and end times.
+    - Travel time between class locations.
+
+- **Solution**:
+  - Model the problem as a graph:
+    - Create a vertex for each class.
+    - Add an edge \( (i, j) \) if the teacher can travel from class \( i \) to \( j \) in time.
+  - The minimum path cover corresponds to the minimum number of teachers required.
+
+- **Proof**:
+  - Each path represents the schedule of a single teacher.
+  - A valid path cover ensures every class is attended by exactly one teacher.
+
+---
+
+### **7. Max-Flow Algorithms and Time Complexity**
+- **Ford-Fulkerson (1956)**:
+  - Time complexity: \( O(|F| \cdot |E|) \), where \( F \) is the max flow.
+- **Orlin (2013)**:
+  - Time complexity: \( O(|V| \cdot |E|) \), optimized for dense graphs.
